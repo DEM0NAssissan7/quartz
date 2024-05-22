@@ -13,6 +13,12 @@ class Quartz{
     static setOptions(_options) {
         Object.assign(options, _options);
     }
+    static createOffscreen(canvas) {
+        // Create offscreen canvas & context
+        offscreenCanvas = new OffscreenCanvas(canvas.width, canvas.height);
+        ctx = offscreenCanvas.getContext("2d");
+        hasContext = true;
+    }
     static setContext(_ctx){
         try {
             _ctx.beginPath();
@@ -22,10 +28,7 @@ class Quartz{
             throw new Error("Invalid context")
         }
         context = _ctx;
-        // Create offscreen canvas & context
-        offscreenCanvas = new OffscreenCanvas(_ctx.canvas.width, _ctx.canvas.height);
-        ctx = offscreenCanvas.getContext("2d");
-        hasContext = true;
+        this.createOffscreen(_ctx.canvas);
     }
     static poly(coords) {
         /* Coords are structured as such:
@@ -42,9 +45,7 @@ class Quartz{
             color: color ?? options.defaultLightColor
         });
     }
-    static render(){
-        if(!hasContext) throw new Error("Quartz context has not been set. You can set it with `Quartz.setContext(ctx)`");
-        
+    static renderOffscreen(){
         ctx.globalAlpha = 1;
         ctx.fillStyle = "white";
         let width = ctx.canvas.width;
@@ -84,6 +85,12 @@ class Quartz{
         objects = [];
         lights = [];
 
+        return offscreenCanvas;
+    }
+    static render(){
+        if(!hasContext) throw new Error("Quartz context has not been set. You can set it with `Quartz.setContext(ctx)`");
+        // Render all graphics offscreen
+        this.renderOffscreen();
         // Cast offscreen canvas onto actual canvas
         context.drawImage(offscreenCanvas, 0, 0);
     }
