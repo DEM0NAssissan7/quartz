@@ -89,11 +89,13 @@ class Quartz{
 
         return offscreenCanvas;
     }
-    static render(){
+    static render(opacity){
         if(!hasContext) throw new Error("Quartz context has not been set. You can set it with `Quartz.setContext(ctx)`");
         // Render all graphics offscreen
         this.renderOffscreen();
+        context.globalAlpha = opacity ?? 1;
         // Cast offscreen canvas onto actual canvas
         context.drawImage(offscreenCanvas, 0, 0);
+        context.globalAlpha = 1;
     }
 }
