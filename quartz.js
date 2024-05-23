@@ -57,8 +57,10 @@ class Quartz{
             // ctx.shadowBlur = options.shadowBlur;    
             // Create light background
             ctx.globalAlpha = options.globalAlpha;
+            if(light.color) {
             ctx.fillStyle = light.color;
-            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.fillRect(0, 0, width, height);
+            }
             
             // Subtract light where a shadow is casted
             // ctx.globalAlpha = options.globalAlpha / 2;
