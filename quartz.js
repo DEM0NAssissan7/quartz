@@ -45,20 +45,17 @@ class Quartz{
             color: color ?? options.defaultLightColor
         });
     }
-    static renderOffscreen(){
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = "white";
+    static renderContext(ctx) {
         let width = ctx.canvas.width;
         let height = ctx.canvas.height;
-        ctx.fillRect(0, 0, width, height);
         for(let light of lights) {
             // Set effects
             // ctx.shadowColor = light.color;
-            // ctx.shadowBlur = options.shadowBlur;    
+            // ctx.shadowBlur = options.shadowBlur;
             // Create light background
             ctx.globalAlpha = options.globalAlpha;
             if(light.color) {
-            ctx.fillStyle = light.color;
+                ctx.fillStyle = light.color;
                 ctx.fillRect(0, 0, width, height);
             }
             
@@ -86,8 +83,14 @@ class Quartz{
         
         objects = [];
         lights = [];
-
-        return offscreenCanvas;
+        ctx.globalAlpha = 1;
+    }
+    static renderOffscreen() {
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, width, height);
+        this.renderContext(ctx);
+        return offscreenCanvas
     }
     static render(opacity){
         if(!hasContext) throw new Error("Quartz context has not been set. You can set it with `Quartz.setContext(ctx)`");
